@@ -1,35 +1,50 @@
-## Put comments here that give an overall description of what your
-## Put comments here that give an overall description of what your
-## functions do
+## These functions can create a matrix like object that stores the matrix, 
+## stores the inverse matrix, and also has functions to calculate the inverse
+## and return the two matrices.
 
-## Write a short comment describing this function
+## The makeCacheMatrix function creates a matrix like object and also contains functions to 
+## set the matrix contents, return the matrix contents and do the same for the inverse matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-  InvMat <- NULL
-  set <- function(y) {
+  InvMat <- NULL                              ## initialize the inverse matrix to NULL
+  
+  set <- function(y) {                        ## set the matrix contents to new values passed in
     x <<- y
-    InvMat <<- NULL
+    InvMat <<- NULL                           ## when to matrix values change, reset the inverse matrix to NULL
   }
-  get <- function() x
-  setInverse <- function(mat) InvMat <<- mat
-  getInverse <- function() InvMat
+  
+  get <- function() {
+    x                                         ## return the contents of the stored matrix
+  }
+  
+  setInverse <- function(mat) {               ## store the inverse matrix, called from cacheSolve function
+    InvMat <<- mat
+  }
+  
+  getInverse <- function() {
+    InvMat                                    ## return the contents of the inverse matrix
+  }
+  
   list(set = set, get = get,
        setInverse = setInverse,
        getInverse = getInverse)  
 }
 
 
-## Write a short comment describing this function
+## The cache solve function calls the R function solve() to get the inverse of a matrix
 
 cacheSolve <- function(x, ...) {
-  ## Return a matrix that is the inverse of 'x'
+  ## If the inverse matrix already exists from a previous call to this function,
+  ## return the existing matrix instead of doing the calculations again
   InvMat <- x$getInverse()
   if(!is.null(InvMat)) {
     message("getting inverse matrix")
     return(InvMat)
   }
-  mat1 <- x$get()
-  InvMat <- solve(mat1, ...)
-  x$setInverse(InvMat)
-  InvMat
+  
+  ## If the inverse matrix does not exist yet, ...
+  mat1 <- x$get()                             ## get the stored matrix
+  InvMat <- solve(mat1, ...)                  ## call the R fucntion to get the inverse matrix
+  x$setInverse(InvMat)                        ## store the inverse matrix
+  InvMat                                      ## return the inverse matrix
 }
